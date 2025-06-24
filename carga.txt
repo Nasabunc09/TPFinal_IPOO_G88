@@ -1,0 +1,21 @@
+INSERT INTO responsable (rnumerolicencia, rnombre, rapellido, rdocumento) VALUES
+(1001, 'Juan', 'Pérez', '12345678'),
+(1002, 'Ana', 'Gómez', '87654321');
+
+INSERT INTO persona (documento, nombre, apellido, telefono) VALUES
+('12345678', 'Juan', 'Pérez', '1122334455'),
+('87654321', 'Ana', 'Gómez', '1199887766'),
+('11223344', 'Carlos', 'López', '1144556677');
+
+
+-- Empresa
+INSERT INTO empresa (enombre, edireccion) VALUES
+('Viajes Felices', 'Av. Siempre Viva 742');
+
+-- Viaje (asegurate de usar IDs válidos)
+INSERT INTO viaje (vorigen, vdestino, vcantmaxpasajeros, idempresa, rnumeroempleado, vimporte)
+VALUES ('Buenos Aires', 'Córdoba', 30, 1, 1, 25000.00);
+
+-- Insertamos a Carlos como pasajero del viaje 1
+INSERT INTO pasajero (pdocumento, idviaje) VALUES
+('11223344', 1);
