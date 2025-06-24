@@ -28,7 +28,7 @@ class Viaje {
     }
 
     public function getVOrigen() {
-        return $this->vDestino;
+        return $this->vOrigen;
     }
 
     public function getVDestino() {
@@ -55,12 +55,16 @@ class Viaje {
 		return $this->costo;
 	}
 
+    public function getMensajeOperacion(){
+		return $this->mensajeOperacion;
+	}
+    
     public function setIdViaje($idViaje) {
         $this->idViaje = $idViaje;
     }
 
-    public function setVOrigen($vDestino) {
-        $this->vDestino = $vDestino;
+    public function setVOrigen($vOrigen) {
+        $this->vOrigen = $vOrigen;
     }
 
     public function setVDestino($vDestino) {

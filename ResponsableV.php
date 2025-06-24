@@ -4,6 +4,7 @@ class ResponsableV extends Persona{
 
     private $rNumEmpleado;
     private $rNumLicencia;
+	private $mensajeOperacion;
     
 
     public function __construct(){
@@ -22,12 +23,20 @@ class ResponsableV extends Persona{
         return $this->rNumLicencia;
     }
 
+	public function getMensajeOperacion(){
+		return $this->mensajeOperacion;
+	}
+
     public function setRNumEmpleado($rNumEmpleado){
         $this->rNumEmpleado = $rNumEmpleado;
     }
 
     public function setRNumLicencia($rNumLicencia){
         $this->rNumLicencia = $rNumLicencia;
+    }
+
+	public function setMensajeOperacion($mensaje){
+        $this->mensajeOperacion = $mensaje;
     }
    
     public function cargar($nombre, $apellido, $documento, $telefono,$rNumEmpleado = 0,$rNumLicencia = 0){	
