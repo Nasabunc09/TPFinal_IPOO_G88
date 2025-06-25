@@ -49,21 +49,21 @@ public function menu(){
                 echo "Nueva Dirección: ";
                 $direccion = trim(fgets(STDIN));
                 if (TestViaje::modificarEmpresa($idEmpresa,$nombre,$direccion)){
-                    echo "Empresa modificada";
-                }else{
-                    echo "Hubo un error, empresa no modificada";
+                    echo " Empresa modificada \n";
+                }else{ 
+                    echo " Hubo un error, empresa no modificada \n";
                 }
                 
             break;
 
             case "3":
-                echo " Eliminar Empresa "."\n";
-                echo "ID de empresa a eliminar: ";
+                echo " Eliminar Empresa \n";
+                echo " ID de empresa a eliminar: ";
                 $idEmpresa = trim(fgets(STDIN));
                 if(TestViaje::eliminarEmpresa($idEmpresa)){
-                    echo "Empresa eliminada";
+                    echo " Empresa eliminada \n";
                 }else{
-                    echo "Hubo un error, empresa no eliminada";
+                    echo " Hubo un error, empresa no eliminada \n";
                 }
             break;
 
@@ -108,7 +108,7 @@ public function menuViajes(){
 
             case "1":
 
-                echo "Agregar viaje"."\n";
+                echo "Agregar viaje \n";
                 echo "Origen: ";
                 $vOrigen = trim(fgets(STDIN));
                 echo "Destino: ";
@@ -122,15 +122,15 @@ public function menuViajes(){
                 echo "Ingresa el id de la empresa: ";
                 $idEmpresa = trim(fgets(STDIN));
                 if(TestViaje::agregarViaje($vOrigen,$vDestino,$cantPasajeros,[],$rnumeroEmpleado,$importe,$idEmpresa)){
-                     echo " Viaje agregado "."\n";
+                     echo " Viaje agregado \n";
                 }else{
-                    echo " Ha ocurrido un error "."\n";
+                    echo " Ha ocurrido un error \n";
                 }
 
             break;
 
             case "2":
-                echo " Modificar Viaje "."\n";
+                echo " Modificar Viaje \n";
                 echo "Id del viaje a modificar: ";
                 $idViaje = trim(fgets(STDIN));
                 echo "Nuevo Origen: ";
@@ -146,20 +146,20 @@ public function menuViajes(){
                 echo "Importe: ";
                 $importe = trim(fgets(STDIN));
                 if(TestViaje::modificarViaje($idViaje,$vOrigen,$vDestino,$cantPasajeros,[],$rnumeroEmpleado,$importe,$idEmpresa)){
-                    echo " Viaje modificado "."\n";
+                    echo " Viaje modificado \n";
                 }else{
-                    echo " Ha ocurrido un error, el viaje no se modificó "."\n";
+                    echo " Ha ocurrido un error, el viaje no se modificó \n";
                 }
             break;
 
             case "3":
-                echo " Eliminar Viaje "."\n";
+                echo " Eliminar Viaje \n";
                 echo "ID de viaje a eliminar: ";
                 $idViaje = trim(fgets(STDIN));
                 if(TestViaje::eliminarViaje($idViaje)){
-                  echo " Viaje eliminado "."\n";
+                  echo " Viaje eliminado \n";
                 }else{
-                    echo " Ha ocurrido un error, el viaje no se eliminó "."\n";
+                    echo " Ha ocurrido un error, el viaje no se eliminó \n";
                 }
             break;
 

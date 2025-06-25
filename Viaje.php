@@ -281,7 +281,7 @@ class Viaje {
     public function __toString(){
 
         $cadena = "ID VIAJE: ".$this->getIdViaje() ."\n".
-        $cadena = "ORIGEN: ".$this->getVDestino() ."\n".
+        $cadena = "ORIGEN: ".$this->getVOrigen() ."\n".
         $cadena = "DESTINO: ".$this->getVDestino() ."\n".
         $cadena = "COSTO DEL VIAJE: " . $this->getCosto() . "\n" .
         $cadena = "CANT. PASAJEROS: ".$this->getCantMaxPasajeros() ."\n". 
