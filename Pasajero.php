@@ -1,7 +1,8 @@
 <?php
 
 Class Pasajero extends Persona{
-
+    
+    
     private $idViaje;
     private $mensajeOperacion;
 
@@ -26,11 +27,10 @@ Class Pasajero extends Persona{
         $this->idViaje = $idViaje;
     }
 
-    public function cargar($nombre, $apellido, $documento, $telefono = 0, $idViaje = 0)
+    public function cargar($nombre,$apellido,$documento,$telefono,$idViaje = 0)
     {
         // llama a los metodos de la clase padre
-        parent::cargar($documento,$nombre, $apellido,$telefono);
-        $this->setTelefono($telefono);
+        parent::cargar($documento,$nombre,$apellido,$telefono);
         $this->setIdViaje($idViaje);
     }
 
@@ -40,9 +40,8 @@ Class Pasajero extends Persona{
         $respuesta = false;
         // se llama al metodo insertar de la clase padre y si se inserta correctamente se inserta en la tabla pasajero
         if (parent::insertar()) {
-            $consulta = "INSERT INTO pasajero(pdocumento, ptelefono, idviaje) VALUES (
+            $consulta = "INSERT INTO pasajero(pdocumento,idviaje) VALUES (
                         '" . $this->getNrodoc() . "',
-                         " . $this->getTelefono() . ",
                          " . $this->getIdViaje() . "
                          )";
             if ($database->iniciar()) {
@@ -71,7 +70,7 @@ Class Pasajero extends Persona{
                         $pasajero["nombre"], 
                         $pasajero["apellido"], 
                         $pasajero["documento"], 
-                        $pasajero["ptelefono"], 
+                        $pasajero["telefono"], 
                         $pasajero["idviaje"]
                     );
                     $rta = true;
@@ -91,9 +90,8 @@ Class Pasajero extends Persona{
         $respuesta = false;
         if (parent::modificar()) {
             $consulta = "UPDATE pasajero SET 
-                        ptelefono = " . $this->getTelefono() . ",
                         idviaje = " . $this->getIdViaje() .
-                        " WHERE pdocumento = " . $this->getNrodoc();
+                        " WHERE pdocumento = '" . $this->getNrodoc() . "'";
 
             if ($database->iniciar()) {
                 if ($database->ejecutar($consulta)) {
@@ -150,7 +148,7 @@ Class Pasajero extends Persona{
                         $pasajeroEncontrado["nombre"],
                         $pasajeroEncontrado["apellido"],
                         $pasajeroEncontrado["pdocumento"],
-                        $pasajeroEncontrado["ptelefono"],
+                        $pasajeroEncontrado["telefono"],
                         $pasajeroEncontrado["idviaje"]
                     );
                     array_push($arregloPasajero, $pasajero);
@@ -167,9 +165,9 @@ Class Pasajero extends Persona{
    
 	public function __toString(){
 
-        $cadena = "-----PASAJERO-----."."\n".
-        $cadena = parent::__toString();
-        $cadena = "ID VIAJE: ".$this->getIdViaje()."\n";
+        $cadena = "-----PASAJERO-----\n";
+        $cadena .= parent::__toString();
+        $cadena .= "ID VIAJE: ".$this->getIdViaje()."\n";
         
 
         return $cadena;

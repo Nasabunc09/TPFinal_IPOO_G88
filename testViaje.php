@@ -98,6 +98,8 @@ public function menuViajes(){
         echo "2- Modificar viaje\n";
         echo "3- Eliminar viaje\n";
         echo "4- Ver viajes\n";
+        echo "5- Ver responsables\n";
+        echo "6- Ver pasajeros\n";
         echo "0- Salir\n";
         echo "Selecciona una opción\n";
         $op = trim(fgets(STDIN));
@@ -163,6 +165,14 @@ public function menuViajes(){
 
             case "4":
                 TestViaje::mostrarViajes();
+            break;
+
+            case "5":
+                TestViaje::mostrarResponsables();
+            break;
+
+            case "6":
+                TestViaje::mostrarPasajeros();
             break;
 
             case "0":
@@ -352,6 +362,27 @@ public static function mostrarViajes(){
         echo "\n$viaje";
     }
   }
+
+  //Pasajeros
+public static function mostrarPasajeros(){
+    $pasajeroObj = new Pasajero();
+    $pasajeros = $pasajeroObj->listar();
+
+    foreach ($pasajeros as $unPasajero) {
+        echo "\n$unPasajero";
+    }
+}
+
+//Responsables
+public static function mostrarResponsables(){
+    $responsableObj = new ResponsableV();
+    $responsables = $responsableObj->listar();
+
+    foreach ($responsables as $unResponsable) {
+        echo "\n$unResponsable";
+    }
+}
+
 }
 
 $bd = new BaseDatos();
@@ -366,4 +397,6 @@ if ($bd->iniciar()) {
 } else {
     echo "Error de conexión: " . $bd->getError();
 }
+
+
 ?>

@@ -17,5 +17,6 @@ INSERT INTO viaje (vorigen, vdestino, vcantmaxpasajeros, idempresa, rnumeroemple
 VALUES ('Buenos Aires', 'Córdoba', 30, 1, 1, 25000.00);
 
 -- Insertamos a Carlos como pasajero del viaje 1
-INSERT INTO pasajero (pdocumento, idviaje) VALUES
-('11223344', 1);
+INSERT INTO pasajero (pdocumento) VALUES
+('11223344'),
+('33445566');
