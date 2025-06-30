@@ -267,28 +267,29 @@ class Viaje {
     }
 
 	
-    private function mostrarCadena($col){
-
+    private function mostrarCadena($pasajeros){
+        
+        $i=0;
         $cadena = "";
-        foreach($col as $elemento){
-            $cadena = $cadena."".$elemento."\n";
+        foreach($pasajeros as $pasajero){
+            $cadena .= $pasajero."\n";
 
         }
 
-        $cadena;
+        return $cadena;
     }
 
     public function __toString(){
+        
+    return  "ID VIAJE: ".$this->getIdViaje() ."\n".
+            "ORIGEN: ".$this->getVOrigen() ."\n".
+            "DESTINO: ".$this->getVDestino() ."\n".
+            "COSTO DEL VIAJE: " . $this->getCosto() . "\n" .
+            "CANT. PASAJEROS: ".$this->getCantMaxPasajeros() ."\n". 
+            "PASAJEROS: ".$this->mostrarCadena($this->getColPasajeros()) ."\n".
+            "RESPONSABLE: ".$this->getObjResponsableV()."\n";
 
-        $cadena = "ID VIAJE: ".$this->getIdViaje() ."\n".
-        $cadena = "ORIGEN: ".$this->getVOrigen() ."\n".
-        $cadena = "DESTINO: ".$this->getVDestino() ."\n".
-        $cadena = "COSTO DEL VIAJE: " . $this->getCosto() . "\n" .
-        $cadena = "CANT. PASAJEROS: ".$this->getCantMaxPasajeros() ."\n". 
-        $cadena = "PASAJEROS: ".$this->mostrarCadena($this->getColPasajeros()) ."\n".
-        $cadena = "RESPONSABLE: ".$this->getObjResponsableV();
-
-        return $cadena;
+        
     }
 
     public function buscarPasajero(int $numeroDeDocumento)

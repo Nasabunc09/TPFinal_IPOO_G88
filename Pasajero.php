@@ -165,7 +165,7 @@ Class Pasajero extends Persona{
    
 	public function __toString(){
 
-        $cadena = "-----PASAJERO-----\n";
+        $cadena  = "-----PASAJERO-----\n";
         $cadena .= parent::__toString();
         $cadena .= "ID VIAJE: ".$this->getIdViaje()."\n";
         

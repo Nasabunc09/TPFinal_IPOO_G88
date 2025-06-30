@@ -195,8 +195,8 @@ class ResponsableV extends Persona{
 
     public function __toString(){
         
-		$cadena = "----------\n";
-        $cadena .= parent::__toString();
+		$cadena  = "----------\n";
+        $cadena  = parent::__toString();
         $cadena .= "Num. Empleado: ".$this->getRNumEmpleado()."\n".
         $cadena .= "Num. Licencia: ". $this->getRNumLicencia()."\n";
        

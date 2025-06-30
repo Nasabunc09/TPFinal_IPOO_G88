@@ -63,3 +63,16 @@ CREATE TABLE pasajero (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/* Tabla intermedia
+CREATE TABLE viaje_pasajero (
+    idviaje BIGINT,
+    pdocumento VARCHAR(15),
+    PRIMARY KEY (idviaje, pdocumento),
+    FOREIGN KEY (idviaje) REFERENCES viaje(idviaje)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (pdocumento) REFERENCES pasajero(pdocumento)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);*/
+
