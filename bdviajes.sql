@@ -16,6 +16,7 @@ CREATE TABLE persona (
     nombre VARCHAR(30),
     apellido VARCHAR(30),
     telefono VARCHAR(15),
+    activo TINYINT DEFAULT 1,
     PRIMARY KEY (documento)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -23,9 +24,8 @@ CREATE TABLE persona (
 CREATE TABLE responsable (
     rnumeroempleado BIGINT AUTO_INCREMENT,
     rnumerolicencia BIGINT,
-    rnombre VARCHAR(150), 
-    rapellido VARCHAR(150),
     rdocumento VARCHAR(15),
+    activo TINYINT DEFAULT 1,
     PRIMARY KEY (rnumeroempleado),
     FOREIGN KEY (rdocumento) REFERENCES persona(documento)
         ON UPDATE CASCADE
@@ -54,6 +54,7 @@ CREATE TABLE viaje (
 CREATE TABLE pasajero (
     pdocumento VARCHAR(15),
     idviaje BIGINT,
+    activo TINYINT DEFAULT 1,
     PRIMARY KEY (pdocumento),
     FOREIGN KEY (pdocumento) REFERENCES persona(documento)
         ON UPDATE CASCADE

@@ -5,6 +5,7 @@ class ResponsableV extends Persona{
     private $rNumEmpleado;
     private $rNumLicencia;
 	private $mensajeOperacion;
+	private $activo;
     
 
     public function __construct(){
@@ -12,6 +13,7 @@ class ResponsableV extends Persona{
         parent::__construct();
         $this->rNumEmpleado = 0;
         $this->rNumLicencia = 0;
+		$this->activo = 1;
         
     }
 
@@ -27,6 +29,14 @@ class ResponsableV extends Persona{
 		return $this->mensajeOperacion;
 	}
 
+	public function getActivo() {
+    return $this->activo;
+	}
+
+	public function setActivo($valor) {
+		$this->activo = $valor;
+	}    
+
     public function setRNumEmpleado($rNumEmpleado){
         $this->rNumEmpleado = $rNumEmpleado;
     }
@@ -39,11 +49,12 @@ class ResponsableV extends Persona{
         $this->mensajeOperacion = $mensaje;
     }
    
-    public function cargar($nombre, $apellido, $documento, $telefono,$rNumEmpleado = 0,$rNumLicencia = 0){	
+    public function cargar($documento,$nombre, $apellido,$telefono,$rNumLicencia = 0,$rNumEmpleado = 0,$activo=1){	
 	    
-        parent::cargar($nombre, $apellido, $documento,$telefono);
-		$this->setRNumEmpleado($rNumEmpleado);
+        parent::cargar($documento,$nombre, $apellido,$telefono);
 		$this->setRNumLicencia($rNumLicencia);
+		$this->setRNumEmpleado($rNumEmpleado);
+		$this->setActivo($activo);
 		
     }
 
@@ -60,13 +71,15 @@ class ResponsableV extends Persona{
 			if($baseDatos->ejecutar($consulta)){
 				if ($empleado = $baseDatos->registro()) {
                     $this->cargar(
+						$empleado["rdocumento"], 
                         $empleado["nombre"], 
                         $empleado["apellido"], 
-                        $empleado["documento"], 
-                        $empleado["rnumerolicencia"]
+                        $empleado["telefono"], 
+                        $empleado["rnumerolicencia"],
+						$empleado["rnumeroempleado"],
+						$empleado["activo"]
                     );
-					// Como la función cargar no recibe el número de empleado como parametro, lo seteamos aparte
-                    $this->setRNumEmpleado($empleado["rnumeroempleado"]);
+					
 					$responsable = true;
 				}				
 			
@@ -87,7 +100,9 @@ class ResponsableV extends Persona{
 
 	    $arregloResponsable = null;
 		$baseDatos = new BaseDatos;
-		$consulta = "SELECT * FROM responsable INNER JOIN persona ON persona.documento = responsable.rdocumento ";
+		$consulta = "SELECT * FROM responsable 
+					 INNER JOIN persona ON persona.documento = responsable.rdocumento
+					 WHERE responsable.activo = 1";
 		if ($condicion!=""){
 		    $consulta .= "WHERE $condicion";
 		}
@@ -98,13 +113,17 @@ class ResponsableV extends Persona{
 				$arregloResponsable= array();
 				while ($responsableEncontrado = $baseDatos->registro()){
                     $responsable = new ResponsableV;
+					
                     $responsable->cargar(
+						$responsableEncontrado["rdocumento"],
                         $responsableEncontrado["nombre"],
                         $responsableEncontrado["apellido"],
-                        $responsableEncontrado["rdocumento"],
-                        $responsableEncontrado["rnumerolicencia"]
+                        $responsableEncontrado["telefono"],
+                        $responsableEncontrado["rnumerolicencia"],
+						$responsableEncontrado["rnumeroempleado"],
+						$responsableEncontrado["activo"]
                     );
-                    $responsable->setRNumEmpleado($responsableEncontrado["rnumeroempleado"]);
+                    
                     array_push($arregloResponsable, $responsable);
                 }
 				
@@ -122,30 +141,37 @@ class ResponsableV extends Persona{
 
 
 	
-	public function insertar(){
+	public function insertar() {
+    $baseDatos = new BaseDatos;
+    $responsable = false;
 
-		$baseDatos = new BaseDatos;
-		$responsable = false;
-		$consulta = "INSERT INTO responsable(rnumerolicencia, rdocumento) VALUES ( /**numero empleado */
-            				" . $this->getRNumLicencia() . ",
-            				'" . $this->getNrodoc() . "')";
-		
-		if($baseDatos->iniciar()){
-			if ($numeroEmpleado = $baseDatos->devuelveIDInsercion($consulta)){
-                    $this->setRNumEmpleado($numeroEmpleado);
-			    $responsable=  true;
+    // Paso 1: insertar en persona si no existe
+    if (!parent::buscar($this->getNrodoc())) {
+        if (!parent::insertar()) {
+            $this->setMensajeOperacion("Error al insertar persona: " . $this->getMensajeOperacion());
+            return false;
+        }
+    }
 
-			}else{
-					$this->setMensajeOperacion($baseDatos->getError());
-					
-			}
+    // Paso 2: insertar en responsable
+    $consulta = "INSERT INTO responsable (rnumeroempleado, rnumerolicencia, rdocumento, activo)
+				 VALUES (" . $this->getRNumEmpleado() . ",
+				" . $this->getRNumLicencia() . ",
+				" . $this->getNrodoc() . ",
+				1)";
 
-		} else {
-				$this->setMensajeOperacion($baseDatos->getError());
-			
-		}
-		return $responsable;
-	}
+    if ($baseDatos->Iniciar()) {
+        if ($baseDatos->Ejecutar($consulta)) {
+            $responsable = true;
+        } else {
+            $this->setMensajeOperacion("Error al insertar responsable: " . $baseDatos->getError());
+        }
+    } else {
+        $this->setMensajeOperacion($baseDatos->getError());
+    }
+
+    return $responsable;
+}
 	
 	
 	
@@ -177,10 +203,14 @@ class ResponsableV extends Persona{
 		$baseDatos = new BaseDatos;
 		$respuesta = false;
 		if($baseDatos->Iniciar()){
-				$consultaBorra = "DELETE FROM responsable WHERE rnumeroempleado = " . $this->getRNumEmpleado();
-				if($baseDatos->ejecutar($consultaBorra)){
-					// Si pudimos borrar el responsable, borramos la persona
-                    parent::eliminar();
+				 // Borrado lógico → solo actualiza el campo activo
+        		$consultaBorra = "UPDATE responsable SET activo = 0 WHERE rnumeroempleado = " . $this->getRNumEmpleado();
+
+				if ($baseDatos->ejecutar($consultaBorra)) {
+				// Borrado lógico de la persona también 
+				$consultaPersona = "UPDATE persona SET activo = 0 WHERE documento = " . $this->getNrodoc();
+				$baseDatos->ejecutar($consultaPersona);
+
 				    $respuesta=  true;
 				}else{
 						$this->setMensajeOperacion($baseDatos->getError());
@@ -191,17 +221,19 @@ class ResponsableV extends Persona{
 			
 		}
 		return $respuesta; 
-	}
+}
 
-    public function __toString(){
-        
-		$cadena  = "----------\n";
-        $cadena  = parent::__toString();
-        $cadena .= "Num. Empleado: ".$this->getRNumEmpleado()."\n".
-        $cadena .= "Num. Licencia: ". $this->getRNumLicencia()."\n";
-       
-        return $cadena;
-    }
+public function __toString() {
+
+    $estado = ($this->getActivo() == 1) ? "Activo" : "Inactivo";
+
+    $cadena  = parent::__toString();
+    $cadena .= "Num. Empleado: " . $this->getRNumEmpleado() . "\n";
+    $cadena .= "Num. Licencia: " . $this->getRNumLicencia() . "\n";
+    $cadena .= "Estado: $estado\n";
+
+    return $cadena;
+}
 
 }
 ?>

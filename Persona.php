@@ -142,11 +142,11 @@ class Persona{
 
 		$baseDatos = new BaseDatos();
 		$persona = false;
-		$consultaInsertar = "INSERT INTO persona(nrodoc,nombre, apellido,email,direccion,telefono) 
-				VALUES ('".$this->getNrodoc()."',
-						'".$this->getNombre()."',
-				        '".$this->getApellido()."',
-						'".$this->getTelefono()."',)";
+		$consultaInsertar = "INSERT INTO persona(documento,nombre, apellido,telefono) 
+							VALUES ('" . $this->getNrodoc() . "',
+							        '" . $this->getNombre() . "',
+									'" . $this->getApellido() . "',
+									'" . $this->getTelefono() . "')";
 		
 		if($baseDatos->Iniciar()){
 
@@ -173,10 +173,10 @@ class Persona{
 	    $respuesta = false; 
 	    $baseDatos = new BaseDatos();
 		$consultaModifica = "UPDATE persona SET 
-							 nombre='".$this->getNombre()."',
-							 apellido='".$this->getApellido()."',
-						     telefono=". $this->getTelefono()." 
-							 WHERE nrodoc=".$this->getNrodoc();
+							nombre='" . $this->getNombre() . "',
+							apellido='" . $this->getApellido() . "',
+							telefono='" . $this->getTelefono() . "'
+							WHERE documento=" . (int)$this->getNrodoc();
 
 		if($baseDatos->iniciar()){
 			if($baseDatos->ejecutar($consultaModifica)){

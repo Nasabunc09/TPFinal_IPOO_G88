@@ -286,8 +286,8 @@ class Viaje {
             "DESTINO: ".$this->getVDestino() ."\n".
             "COSTO DEL VIAJE: " . $this->getCosto() . "\n" .
             "CANT. PASAJEROS: ".$this->getCantMaxPasajeros() ."\n". 
-            "PASAJEROS: ".$this->mostrarCadena($this->getColPasajeros()) ."\n".
-            "RESPONSABLE: ".$this->getObjResponsableV()."\n";
+            //"PASAJEROS: \n".$this->mostrarCadena($this->getColPasajeros()) ."\n".
+            "RESPONSABLE: \n".$this->getObjResponsableV()."\n";
 
         
     }

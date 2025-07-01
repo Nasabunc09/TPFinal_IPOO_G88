@@ -5,6 +5,7 @@ Class Pasajero extends Persona{
     
     private $idViaje;
     private $mensajeOperacion;
+    private $activo;
 
     public function __construct(){
 
@@ -20,6 +21,14 @@ Class Pasajero extends Persona{
 		return $this->mensajeOperacion;
 	}
 
+    public function getActivo() {
+    return $this->activo;
+	}
+
+	public function setActivo($valor) {
+		$this->activo = $valor;
+	}
+
     public function setMensajeOperacion($mensajeOperacion){
 		$this->mensajeOperacion = $mensajeOperacion;
 	}
@@ -27,36 +36,44 @@ Class Pasajero extends Persona{
         $this->idViaje = $idViaje;
     }
 
-    public function cargar($nombre,$apellido,$documento,$telefono,$idViaje = 0)
+    public function cargar($nombre,$apellido,$documento,$telefono,$idViaje = 0,$activo=1)
     {
         // llama a los metodos de la clase padre
         parent::cargar($documento,$nombre,$apellido,$telefono);
         $this->setIdViaje($idViaje);
+        $this->setActivo($activo);
     }
 
     public function insertar(){
 
         $database = new BaseDatos;
         $respuesta = false;
-        // se llama al metodo insertar de la clase padre y si se inserta correctamente se inserta en la tabla pasajero
-        if (parent::insertar()) {
-            $consulta = "INSERT INTO pasajero(pdocumento,idviaje) VALUES (
-                        '" . $this->getNrodoc() . "',
-                         " . $this->getIdViaje() . "
-                         )";
-            if ($database->iniciar()) {
-                if ($database->ejecutar($consulta)) {
-                    $respuesta =  true;
-                } else {
-                    $this->setMensajeoperacion($database->getError());
-                }
-            } else {
-                $this->setMensajeoperacion($database->getError());
+        // Inserta en persona si no existe
+        if (!parent::buscar($this->getNrodoc())) {
+            if (!parent::insertar()) {
+                $this->setMensajeOperacion("Error al insertar persona: " . $this->getMensajeOperacion());
+                return false;
             }
         }
 
+        // Luego inserta en pasajero
+        $consulta = "INSERT INTO pasajero(pdocumento, idviaje, activo) 
+                    VALUES (" . $this->getNrodoc() . ",
+                            " . $this->getIdViaje() . ",
+                            1)";
+
+        if ($database->iniciar()) {
+            if ($database->ejecutar($consulta)) {
+                $respuesta = true;
+            } else {
+                $this->setMensajeOperacion($database->getError());
+            }
+        } else {
+            $this->setMensajeOperacion($database->getError());
+        }
+
         return $respuesta;
-    }
+}
 
     public function buscar($documento){
 
@@ -71,7 +88,8 @@ Class Pasajero extends Persona{
                         $pasajero["apellido"], 
                         $pasajero["documento"], 
                         $pasajero["telefono"], 
-                        $pasajero["idviaje"]
+                        $pasajero["idviaje"],
+                        $pasajero["activo"],
                     );
                     $rta = true;
                 }
@@ -107,16 +125,20 @@ Class Pasajero extends Persona{
         return $respuesta;
     }
 
-    public function eliminar(){
-
+    public function eliminar() {
         $database = new BaseDatos;
         $respuesta = false;
 
-        $consulta = "DELETE FROM pasajero WHERE pdocumento = '" . $this->getNrodoc() . "'";
+        // Borrado lógico de la tabla pasajero
+        $consultaPasajero = "UPDATE pasajero SET activo = 0 WHERE pdocumento = " . $this->getNrodoc();
+
         if ($database->iniciar()) {
-            if ($database->ejecutar($consulta)) {
+            if ($database->ejecutar($consultaPasajero)) {
+                // También desactivamos a la persona
+                $consultaPersona = "UPDATE persona SET activo = 0 WHERE documento = " . $this->getNrodoc();
+                $database->ejecutar($consultaPersona); // no importa si falla, es decorativo
+
                 $respuesta = true;
-                parent::eliminar();
             } else {
                 $this->setMensajeOperacion($database->getError());
             }
@@ -131,12 +153,15 @@ Class Pasajero extends Persona{
 
         $arregloPasajero = null;
         $database = new BaseDatos;
-        $consulta = "SELECT * FROM pasajero INNER JOIN persona ON persona.documento = pasajero.pdocumento ";
+        $consulta = "SELECT * FROM pasajero 
+                    INNER JOIN persona ON persona.documento = pasajero.pdocumento 
+                    WHERE pasajero.activo = 1";
+
         if ($condicion != "") {
-            $consulta .= "WHERE $condicion ";
+            $consulta .= " AND $condicion ";
         }
 
-        $consulta .= "ORDER BY apellido";
+        $consulta .= " ORDER BY apellido";
 
         if ($database->iniciar()) {
             if ($database->ejecutar($consulta)) {
@@ -149,7 +174,8 @@ Class Pasajero extends Persona{
                         $pasajeroEncontrado["apellido"],
                         $pasajeroEncontrado["pdocumento"],
                         $pasajeroEncontrado["telefono"],
-                        $pasajeroEncontrado["idviaje"]
+                        $pasajeroEncontrado["idviaje"],
+                        $pasajeroEncontrado["activo"]
                     );
                     array_push($arregloPasajero, $pasajero);
                 }
@@ -165,9 +191,12 @@ Class Pasajero extends Persona{
    
 	public function __toString(){
 
-        $cadena  = "-----PASAJERO-----\n";
-        $cadena .= parent::__toString();
+        $estado = ($this->getActivo() == 1) ? "Activo" : "Inactivo";
+
+    
+        $cadena  = parent::__toString();
         $cadena .= "ID VIAJE: ".$this->getIdViaje()."\n";
+        $cadena .= "Estado: $estado\n";
         
 
         return $cadena;
