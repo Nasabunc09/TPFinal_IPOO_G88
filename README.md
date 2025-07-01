@@ -1,7 +1,7 @@
  🔠 Clases del modelo (lado objetos – PHP)
  
 📦 Empresa
-•	idEmpresa (PK)
+•	idEmpresa 
 •	nombre
 •	direccion
 •	Relación: tiene muchos Viajes.
@@ -14,24 +14,24 @@
 • activo (para borrado logico)
 
 🚍 Viaje
-•	idViaje (PK)
+•	idViaje 
 •	origen
 •	destino
 •	vcantMaxPasajeros
-•	idEmpresa (FK → Empresa)
-•	rNumeroEmpleado (FK → ResponsableV)
+•	idEmpresa 
+•	rNumeroEmpleado
 •	vImporte
 •	Relación: cada viaje tiene un responsable
 
 👤 ResponsableV
-•	rnumeroEmpleado (PK)
+•	rnumeroEmpleado 
 •	rnumeroLicencia
 • rdocumento
 • activo (para borrado logico)
 •	Relación: 
 
 🧍 Pasajero
-•	pDocumento (PK)
+•	pDocumento 
 •	idViaje
 •	activo (para borrado logico)
 •	Relación: 
